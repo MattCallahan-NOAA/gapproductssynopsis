@@ -92,7 +92,7 @@ age_plot2
 # download haul data
 gap_haul <- get_gap_haul()
 #download CPUE data
-gap_cpue <- get
+gap_cpue <- get_gap_cpue()
 
 yfs2017 <- akgfmaps::YFS2017
 head(yfs2017)
