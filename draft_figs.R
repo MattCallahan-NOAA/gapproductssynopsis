@@ -1,7 +1,7 @@
 # devtools::install_github("afsc-gap-products/akgfmaps", build_vignettes = TRUE)
 # devtools::install_github("MattCallahan-NOAA/akfingapdata")
 # devtools::install_github("pbs-assess/gfplot")
-devtools::install_github("MattCallahan-NOAA/akmarineareas2")
+#devtools::install_github("MattCallahan-NOAA/akmarineareas2")
 
 library(gridExtra)
 library(tidyverse)
@@ -11,6 +11,7 @@ library(keyring)
 library(gfplot)
 library(akmarineareas2)
 library(sf)
+library(FSA)
 
 generate_synopsis <- function(species_code=NA, 
                               survey_definition_id=47, 
@@ -19,6 +20,12 @@ generate_synopsis <- function(species_code=NA,
                               end_year=3000) {
   # define token for pulling gap data from akfin api
   token <-create_token("akfin_secret")
+  
+  species_code=10110
+  survey_definition_id=47 
+  area_id=99903
+  start_year=1990
+  end_year=3000
 
   # define species common name
   sc<-species_code
@@ -61,6 +68,8 @@ generate_synopsis <- function(species_code=NA,
 # plot biomass
 biomass_plot <- ggplot(data=gap_biomass)+
   geom_line(aes(x=year, y=biomass_mt))+
+  geom_line(aes(x=year, y=biomass_mt-sqrt(biomass_var)), lty=2)+
+  geom_line(aes(x=year, y=biomass_mt+sqrt(biomass_var)), lty=2)+
   ylab("Biomass (mt)")+
   theme_bw()
 
@@ -87,21 +96,21 @@ age_plot <- ggplot(data=gap_age %>% filter(age>=0))+
   age_plot <- ggplot()+ggtitle("no age data")
 }
 # plot age as in the gfsynopsis
-if(any(!is.na(gap_specimen$age))) {
-gap_spec_p <- gap_specimen %>%
-  filter(age >=0) %>%
-  group_by(age, sex, year) %>%
-  summarize(N=n())%>%
-  rowwise() %>%
-  mutate(year2=ifelse(sex==1, year, year+0.5))
-
-age_plot2 <- ggplot(data=gap_spec_p)+
-  geom_point(aes(x=year2, y=age, size=N, color=factor(sex)), shape=21 )+
-  scale_color_manual(name="sex",values=mycolors)+
-  theme_bw()
-} else {
-  age_plot2 <- ggplot()+ggtitle("no age data")
-}
+# if(any(!is.na(gap_specimen$age))) {
+# gap_spec_p <- gap_specimen %>%
+#   filter(age >=0) %>%
+#   group_by(age, sex, year) %>%
+#   summarize(N=n())%>%
+#   rowwise() %>%
+#   mutate(year2=ifelse(sex==1, year, year+0.5))
+# 
+# age_plot2 <- ggplot(data=gap_spec_p)+
+#   geom_point(aes(x=year2, y=age, size=N, color=factor(sex)), shape=21 )+
+#   scale_color_manual(name="sex",values=mycolors)+
+#   theme_bw()
+# } else {
+#   age_plot2 <- ggplot()+ggtitle("no age data")
+# }
   
 # cpue map
 # download haul data
@@ -151,11 +160,32 @@ idw_map <- make_idw_map_gs(x = gap_cpue_recent, # Pass data as a data frame
 # plot growth
 # If we want the actual VBF fit and equations that will take a little more work.
 if(any(!is.na(gap_specimen$age))) {
-length_at_age_plot<-ggplot()+
-  geom_point(data=gap_specimen, aes(x=age, y=length_mm), color="lightgray", size=2)+
-  geom_smooth(data=gap_specimen%>%filter(sex==1),aes(x=age, y=length_mm), method="loess", se=FALSE, color=mcolor)+
-  geom_smooth(data=gap_specimen%>%filter(sex==2),aes(x=age, y=length_mm), method="loess", se=FALSE, color=fcolor)+
-  theme_bw()
+  ageplot_m<-gap_specimen %>%
+    filter(age>0 & length_mm >0 & sex == 1)
+  
+  ageplot_f<-gap_specimen %>%
+    filter(age>0 & length_mm >0 & sex == 2)
+  
+  vbmod <- length_mm ~ Linf * (1 - exp(-K * (age - t0)))
+  
+  startsm <- vbStarts(formula = length_mm ~ age, data = ageplot_m)
+  startsf <- vbStarts(formula = length_mm ~ age, data = ageplot_f)
+  
+  age_modm <-nls(vbmod, data = ageplot_m, start = startsm)
+  age_modf <-nls(vbmod, data = ageplot_f, start = startsf)
+  
+  predm <- predict(age_modm)
+  predf <- predict(age_modf)
+  
+  ageplot_m$pred <-predm
+  ageplot_f$pred <-predf
+  
+  length_at_age_plot<-ggplot()+
+    geom_jitter(data=ageplot_dat, aes(x=age, y=length_mm), width = 0.1, alpha = 0.15, size = 2)+
+    geom_line(data=ageplot_m, aes(x=age, y=pred), color=mcolor)+
+    geom_line(data=ageplot_f, aes(x=age, y=pred), color=fcolor)+
+    theme_bw()
+  length_at_age_plot
 
 } else {
   length_at_age_plot <- ggplot()+ggtitle("no age data")

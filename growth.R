@@ -210,3 +210,36 @@ fit_length_weight <- function(dat,
   
   list(predictions = pred, pars = pars, data = as_tibble(dat), model = m)
 }
+
+
+#############################################################################
+# https://danstich.github.io/we-r-nycafs/fishStats.html
+library(FSA)
+
+ageplot_m<-gap_specimen %>%
+  filter(age>0 & length_mm >0 & sex == 1)
+
+ageplot_f<-gap_specimen %>%
+  filter(age>0 & length_mm >0 & sex == 2)
+
+vbmod <- length_mm ~ Linf * (1 - exp(-K * (age - t0)))
+
+startsm <- vbStarts(formula = length_mm ~ age, data = ageplot_m)
+startsf <- vbStarts(formula = length_mm ~ age, data = ageplot_f)
+
+age_modm <-nls(vbmod, data = ageplot_m, start = startsm)
+age_modf <-nls(vbmod, data = ageplot_f, start = startsf)
+
+predm <- predict(age_modm)
+predf <- predict(age_modf)
+
+ageplot_m$pred <-predm
+ageplot_f$pred <-predf
+
+
+length_at_age_plot<-ggplot()+
+  geom_jitter(data=ageplot_dat, aes(x=age, y=length_mm), width = 0.1, alpha = 0.15, size = 2)+
+  geom_line(data=ageplot_m, aes(x=age, y=pred), color=mcolor)+
+  geom_line(data=ageplot_f, aes(x=age, y=pred), color=fcolor)+
+  theme_bw()
+length_at_age_plot
