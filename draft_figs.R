@@ -21,11 +21,11 @@ generate_synopsis <- function(species_code=NA,
   # define token for pulling gap data from akfin api
   token <-create_token("akfin_secret")
   
-  species_code=10110
-  survey_definition_id=47 
-  area_id=99903
-  start_year=1990
-  end_year=3000
+  # species_code=10110
+  # survey_definition_id=47 
+  # area_id=99903
+  # start_year=1990
+  # end_year=3000
 
   # define species common name
   sc<-species_code
@@ -181,7 +181,7 @@ if(any(!is.na(gap_specimen$age))) {
   ageplot_f$pred <-predf
   
   length_at_age_plot<-ggplot()+
-    geom_jitter(data=ageplot_dat, aes(x=age, y=length_mm), width = 0.1, alpha = 0.15, size = 2)+
+    geom_jitter(data=gap_specimen, aes(x=age, y=length_mm), width = 0.1, alpha = 0.15, size = 2)+
     geom_line(data=ageplot_m, aes(x=age, y=pred), color=mcolor)+
     geom_line(data=ageplot_f, aes(x=age, y=pred), color=fcolor)+
     theme_bw()
@@ -236,9 +236,9 @@ sample_size_plot<-ggplot(data=biodata_count)+
         panel.grid.major.x=element_blank())
 
 
-grid.arrange(top=paste0(common_name,"\n",scientific_name), ncol=2,
+grid.arrange(top=paste0(common_name,"\n",scientific_name), ncol=1,
              length_plot, biomass_plot, 
-             age_plot, age_plot2, 
+             age_plot, 
              length_at_age_plot, length_weight_plot,
              idw_map, sample_size_plot)
 }
@@ -252,7 +252,7 @@ png("sleeper_shark_test.png", width=20, height = 30, units="in",res=300)
 generate_synopsis(species_code=320)
 dev.off()
 
-png("Northern_rockfish_test.png", width=20, height = 30, units="in",res=300)
+png("Northern_rockfish_test.png", width=20, height = 60, units="in",res=300)
 generate_synopsis(species_code=30420)
 dev.off()
 
