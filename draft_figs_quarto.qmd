@@ -11,7 +11,7 @@ params:
 
 Synopsis for `r params$species_code`
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r include=FALSE}
 library(gridExtra)
 library(tidyverse)
 library(akfingapdata)
@@ -21,6 +21,8 @@ library(gfplot)
 library(akmarineareas2)
 library(sf)
 library(FSA)
+
+options(scipen = 999)
 
   # define token for pulling gap data from akfin api
 token <-create_token("akfin_secret")
@@ -95,7 +97,7 @@ length_plot <- ggplot(data=gap_length_p)+
   scale_color_manual(name="sex",values=mycolors)+
   facet_grid(rows=vars(year))+
   theme_bw()+
-  theme()
+  theme(strip.text.y = element_text(angle = 0))
 
 # plot age comp
 if(any(gap_age$age>0)) {
@@ -103,7 +105,8 @@ age_plot <- ggplot(data=gap_age %>% filter(age>=0))+
   geom_line(aes(x=age, y= population_count, color=factor(sex)))+
   scale_color_manual(name="sex",values=mycolors)+
   facet_grid(rows=vars(year))+
-  theme_bw()
+  theme_bw()+
+  theme(strip.text.y = element_text(angle = 0))
 } else {
   age_plot <- ggplot()+ggtitle("no age data")
 }
@@ -248,7 +251,7 @@ sample_size_plot<-ggplot(data=biodata_count)+
         panel.grid.major.x=element_blank())
 
 
-return(list(length_plot, biomass_plot, 
+return(list(biomass_plot, length_plot,  
              age_plot, 
              length_at_age_plot, length_weight_plot,
              idw_map, sample_size_plot))
@@ -260,5 +263,32 @@ gp<-generate_synopsis(species_code=params$species_code,
                   start_year=1990,
                   end_year=3000)
 
-print(gp)
+```
+
+```{r fig1, echo=FALSE, message=FALSE, warning=FALSE}
+print(gp[1])
+```
+
+```{r fig2, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.2}
+print(gp[2])
+```
+
+```{r fig3, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.2}
+print(gp[3])
+```
+
+```{r fig4, echo=FALSE, message=FALSE, warning=FALSE}
+print(gp[4])
+```
+
+```{r fig5, echo=FALSE, message=FALSE, warning=FALSE}
+print(gp[5])
+```
+
+```{r fig6, echo=FALSE, message=FALSE, warning=FALSE}
+print(gp[6])
+```
+
+```{r fig7, echo=FALSE, message=FALSE, warning=FALSE}
+print(gp[7])
 ```
