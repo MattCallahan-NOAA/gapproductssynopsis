@@ -1,7 +1,7 @@
-# devtools::install_github("afsc-gap-products/akgfmaps", build_vignettes = TRUE)
+devtools::install_github("afsc-gap-products/akgfmaps", build_vignettes = TRUE)
 # devtools::install_github("MattCallahan-NOAA/akfingapdata")
 # devtools::install_github("pbs-assess/gfplot")
-#devtools::install_github("MattCallahan-NOAA/akmarineareas2")
+# devtools::install_github("MattCallahan-NOAA/akmarineareas2")
 
 library(gridExtra)
 library(tidyverse)

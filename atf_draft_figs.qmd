@@ -4,7 +4,7 @@ author: "Matt Callahan"
 format: html
 editor: visual
 params: 
-  species_code: 30420
+  species_code: 10110
   survey_dfinition_id: 47
   area_id: 99903
 ---

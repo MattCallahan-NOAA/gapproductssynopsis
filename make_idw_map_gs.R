@@ -1,5 +1,4 @@
 
-
 ###############################################################################
 make_idw_map_gs <- function(x = NA,
                          common_name = NA,
@@ -107,38 +106,38 @@ make_idw_map_gs <- function(x = NA,
   # Format breaks for plotting----------------------------------------------------------------------
   # Automatic break selection based on character vector.
   alt.round <- 0 # Set alternative rounding factor to zero based on user-specified breaks
-  
+
   if(is.character(set.breaks[1])) {
     set.breaks <- tolower(set.breaks)
-    
+
     # Set breaks ----
     break.vals <- classInt::classIntervals(x$cpue_kgkm2, n = 5, style = set.breaks)$brks
-    
+
     # Setup rounding for small CPUE ----
     alt.round <- floor(-1*(min((log10(break.vals)-2)[abs(break.vals) > 0])))
-    
+
     set.breaks <- c(-1, round(break.vals, alt.round))
   }
-  
+
   # Ensure breaks go to zero------------------------------------------------------------------------
   if(min(set.breaks) > 0) {
     set.breaks <- c(0, set.breaks)
   }
-  
+
   if(min(set.breaks) == 0) {
     set.breaks <- c(-1, set.breaks)
   }
-  
+
   # Ensure breaks span the full range---------------------------------------------------------------
   if(max(set.breaks) < max(stn.predict$var1.pred)){
     set.breaks[length(set.breaks)] <- max(stn.predict$var1.pred) + 1
   }
-  
-  
+
+
   # Trim breaks to significant digits to account for differences in range among species-------------
   dig.lab <- 7
   set.levels <- cut(stn.predict$var1.pred, set.breaks, right = TRUE, dig.lab = dig.lab)
-  
+
   if(alt.round > 0) {
     while(dig.lab > alt.round) { # Rounding for small CPUE
       dig.lab <- dig.lab - 1
@@ -154,9 +153,9 @@ make_idw_map_gs <- function(x = NA,
   # Cut extrapolation grid to support discrete scale------------------------------------------------
   extrap.grid$var1.pred <- cut(extrap.grid$var1.pred, set.breaks, right = TRUE, dig.lab = dig.lab)
   
-  # Which breaks need commas?-----------------------------------------------------------------------
+  # # Which breaks need commas?-----------------------------------------------------------------------
   sig.dig <- round(set.breaks[which(nchar(round(set.breaks)) >= 4)])
-  
+
   # Drop brackets, add commas, create 'No catch' level to legend labels-----------------------------
   make_level_labels <- function(vec) {
     vec <- as.character(vec)
@@ -193,13 +192,7 @@ make_idw_map_gs <- function(x = NA,
     extrap.grid <- extrap.grid |>
       dplyr::select(which(names(extrap.grid) %in% c("var1.pred", "n", "SURVEY", "geometry")))
     
-    # Simplify geometry using ms_simplify function from the rmapshaper package
-    if(extrapolation.grid.type == "sf.simple") {
-      extrap.grid <- extrap.grid |>
-        rmapshaper::ms_simplify(keep_shapes = TRUE,
-                                keep = 0.04)
-    }
-    
+
     p1 <- ggplot2::ggplot() +
       ggplot2::geom_sf(data = map_layers$survey.area, fill = NA) +
       ggplot2::geom_sf(data = extrap.grid,
@@ -207,7 +200,7 @@ make_idw_map_gs <- function(x = NA,
                        color = NA) +
       ggplot2::geom_sf(data = map_layers$survey.area, fill = NA) +
       ggplot2::geom_sf(data = map_layers$akland, fill = "grey80") +
-      ggplot2::geom_sf(data = map_layers$bathymetry) +
+      #ggplot2::geom_sf(data = map_layers$bathymetry) +
       ggplot2::geom_sf(data = map_layers$graticule, color = alpha("grey70", 0.3)) +
       ggplot2::scale_fill_manual(name = paste0(key.title, "\n", key.title.units),
                                  values = c("white", RColorBrewer::brewer.pal(9, name = "Blues")[c(2,4,6,8,9)]),
