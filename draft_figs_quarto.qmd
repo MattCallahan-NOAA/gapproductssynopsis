@@ -1,15 +1,15 @@
 ---
-title: "gap_products_synopsis"
-author: "Matt Callahan"
-format: html
+format: 
+  html:
+    self-contained: true
 editor: visual
 params: 
-  species_code: 30420
-  survey_dfinition_id: 47
+  species_code: 10130
+  survey_definition_id: 47
   area_id: 99903
 ---
 
-Synopsis for `r params$species_code`
+GAP Products Synopsis for `r params$species_code`
 
 ```{r include=FALSE}
 library(egg)
@@ -31,7 +31,7 @@ token <-create_token("akfin_secret")
 source("generate_synopsis.R")
 
 gp<-generate_synopsis(species_code=params$species_code, 
-                  survey_definition_id=params$survey_dfinition_id, 
+                  survey_definition_id=params$survey_definition_id, 
                   area_id=params$area_id,
                   start_year=1990,
                   end_year=3000)
@@ -65,3 +65,5 @@ print(gp[6])
 ```{r fig7, echo=FALSE, message=FALSE, warning=FALSE}
 print(gp[7])
 ```
+
+<https://github.com/MattCallahan-NOAA/gapproductssynopsis>
