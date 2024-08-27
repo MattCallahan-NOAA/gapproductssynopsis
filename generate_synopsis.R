@@ -137,7 +137,9 @@ generate_synopsis <- function(species_code=NA,
   
   #### cpue map ####
   # download haul data
-  gap_haul <- get_gap_haul()
+  #gap_haul <- get_gap_haul()
+  #saveRDS(gap_haul, "gap_haul.RDS")
+  gap_haul<-readRDS("gap_haul.RDS")
   
   #download CPUE data
   gap_cpue <- get_gap_cpue(survey_definition_id = survey_definition_id,

@@ -1,0 +1,61 @@
+---
+format: 
+  html:
+    self-contained: true
+editor: visual
+params: 
+  species_code: 10130
+  survey_definition_id: 47
+  area_id: 99903
+---
+
+GAP Products Synopsis for `r params$species_code`
+
+```{r include=FALSE}
+library(egg)
+library(tidyverse)
+library(akfingapdata)
+library(akgfmaps)
+library(keyring)
+library(gfplot)
+library(akmarineareas2)
+library(sf)
+library(FSA)
+library(classInt)
+
+options(scipen = 999)
+
+  # define token for pulling gap data from akfin api
+token <-create_token("akfin_secret")
+
+source("generate_synopsis.R")
+
+gp<-generate_synopsis(species_code=params$species_code, 
+                  survey_definition_id=params$survey_definition_id, 
+                  area_id=params$area_id,
+                  start_year=1990,
+                  end_year=3000)
+
+```
+
+```{r fig1, echo=FALSE, message=FALSE, warning=FALSE}
+print(gp[1])
+```
+
+```{r fig2, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.2}
+print(gp[2])
+```
+
+```{r fig3, echo=FALSE, message=FALSE, warning=FALSE}
+print(gp[3])
+```
+
+```{r fig5, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.5}
+print(gp[4])
+```
+
+```{r fig7, echo=FALSE, message=FALSE, warning=FALSE}
+print(gp[5])
+```
+
+<https://github.com/MattCallahan-NOAA/gapproductssynopsis>
