@@ -261,8 +261,14 @@ generate_synopsis <- function(species_code=NA,
     startsm <- vbStarts(formula = length_mm ~ age, data = ageplot_m)
     startsf <- vbStarts(formula = length_mm ~ age, data = ageplot_f)
     
+    # Fails due to bad starts for shortraker. These starts fixed it.
+    # startsf[1]=800
+    # startsf[2]=0.1
+    # startsf[3]=4
+    
     age_modm <-nls(vbmod, data = ageplot_m, start = startsm)
     age_modf <-nls(vbmod, data = ageplot_f, start = startsf)
+  
     
     predm <- predict(age_modm)
     predf <- predict(age_modf)

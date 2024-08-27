@@ -107,3 +107,11 @@ for (i in 2:nrow(fishes4)) {
     area_id = 99903
   )
 }
+
+# shortraker
+srkr <- txn %>% filter(grepl("shortraker", common_name))
+
+render_synopsis_qmd(name="shortaker_rockfish",
+                    species_code=30576,
+                    survey_definition_id = 47,
+                    area_id = 99903)
