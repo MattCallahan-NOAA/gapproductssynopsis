@@ -33,15 +33,8 @@ source("generate_synopsis.R")
 gp<-generate_synopsis(species_code=params$species_code, 
                   survey_definition_id=params$survey_definition_id, 
                   area_id=params$area_id,
-                  start_year=1982,
+                  start_year=1990,
                   end_year=3000)
-
-# region specific chunk sizing
-std <- 1
-tall <- 1.2
-taller <- 1.5
-taller2 <- 2.0
-tallest <-2.5
 
 ```
 
@@ -49,11 +42,11 @@ tallest <-2.5
 print(gp[1])
 ```
 
-```{r fig2, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, taller2, tall)}
+```{r fig2, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.2}
 print(gp[2])
 ```
 
-```{r fig3, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, taller, tall)}
+```{r fig3, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.2}
 print(gp[3])
 ```
 
@@ -65,11 +58,11 @@ print(gp[4])
 print(gp[5])
 ```
 
-```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, taller)}
+```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.5}
 print(gp[6])
 ```
 
-```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tall, std)}
+```{r fig7, echo=FALSE, message=FALSE, warning=FALSE}
 print(gp[7])
 ```
 

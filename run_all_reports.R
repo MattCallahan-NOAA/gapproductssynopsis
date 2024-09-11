@@ -3,6 +3,7 @@ library(keyring)
 library(akfingapdata)
 library(magrittr)
 library(dplyr)
+library(here)
 
 # load species list from Lewis
 fishes<-readRDS("common_fishes.RDS")
@@ -17,6 +18,38 @@ fishes <- fishes %>%
 fishes <- fishes %>%
   mutate(report_name= gsub(" ", "_", common_name))
 
+# specify commercially important fishes
+fishes_a <- fishes %>%
+  filter(species_code %in% c(21740,
+                             21720,
+                             10120,
+                             10110,
+                             10130,
+                             10261,
+                             10200,
+                             10210,
+                             10285,
+                             30060,
+                             10112,
+                             20510,
+                             10180,
+                             10262,
+                             10261,
+                             30420,
+                             10140,
+                             21921))
+
+#define region for running report
+survey_definition_id <- 98
+
+region <- ifelse(survey_definition_id==47, "goa",
+                 ifelse(survey_definition_id==98, "bs",
+                        iselse(survey_definition_id==51, "ai")))
+
+area_id <- ifelse(survey_definition_id==47, 99903,
+                 ifelse(survey_definition_id==98, 99900,
+                        iselse(survey_definition_id==51, 99904)))
+
 
 # Function to render Quarto document for each species
 quarto_file <- "draft_figs_quarto.qmd"
@@ -25,24 +58,24 @@ render_synopsis_qmd <- function(name, species_code, survey_definition_id, area_i
   quarto_render(
     input = quarto_file,
     execute_params = list(species_code = species_code, survey_definition_id = survey_definition_id, area_id = area_id),
-    output_file = paste0(name, ".html")
+    output_file = paste0(region, "_", name, ".html")
   )
 }
 
 # test
 render_synopsis_qmd(
-  name = fishes$report_name[33],
-  species_code = fishes$species_code[33],
-  survey_definition_id = 47,
-  area_id = 99903)
+  name = fishes$report_name[1],
+  species_code = fishes$species_code[1],
+  survey_definition_id = survey_definition_id,
+  area_id = area_id)
 
 # Run synopsis for listed fishes
-for (i in 1:nrow(fishes)) {
+for (i in 2:nrow(fishes)) {
   render_synopsis_qmd(
     name = fishes$report_name[i],
     species_code = fishes$species_code[i],
-    survey_definition_id = 47,
-    area_id = 99903
+    survey_definition_id = survey_definition_id,
+    area_id = area_id
   )
 }
 
