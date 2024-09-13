@@ -116,6 +116,9 @@ generate_synopsis <- function(species_code=NA,
     
     theme_bw()
   
+  # set plot column number
+ # facetcol <- ifelse(survey_definition_id == 98, 2, 1)
+  
   #### plot sizecomp ####
   length_plot <- ggplot(data=gap_sizecomp, aes(x=length_mm, y= proportion, color=sex, fill=sex))+
     geom_area(position="identity", alpha = 0.25)+
@@ -142,8 +145,8 @@ generate_synopsis <- function(species_code=NA,
   
   #### cpue map ####
   # download haul data
-  #gap_haul <- get_gap_haul()
-  #saveRDS(gap_haul, "gap_haul.RDS")
+  # gap_haul <- get_gap_haul()
+  # saveRDS(gap_haul, "gap_haul.RDS")
   gap_haul<-readRDS("gap_haul.RDS")
   
   #download CPUE data

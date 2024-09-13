@@ -40,7 +40,6 @@ gp<-generate_synopsis(species_code=params$species_code,
 std <- 1
 tall <- 1.2
 taller <- 1.5
-taller2 <- 2.0
 tallest <-2.5
 
 ```
@@ -49,11 +48,11 @@ tallest <-2.5
 print(gp[1])
 ```
 
-```{r fig2, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, taller2, tall)}
+```{r fig2, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, tall)}
 print(gp[2])
 ```
 
-```{r fig3, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, taller, tall)}
+```{r fig3, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, tall)}
 print(gp[3])
 ```
 

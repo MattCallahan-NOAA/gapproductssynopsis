@@ -29,13 +29,9 @@ fishes_a <- fishes %>%
                              10200,
                              10210,
                              10285,
-                             30060,
+                             471,
                              10112,
                              20510,
-                             10180,
-                             10262,
-                             10261,
-                             30420,
                              10140,
                              21921))
 
@@ -64,20 +60,22 @@ render_synopsis_qmd <- function(name, species_code, survey_definition_id, area_i
 
 # test
 render_synopsis_qmd(
-  name = fishes$report_name[1],
-  species_code = fishes$species_code[1],
+  name = fishes_a$report_name[1],
+  species_code = fishes_a$species_code[1],
   survey_definition_id = survey_definition_id,
   area_id = area_id)
 
 # Run synopsis for listed fishes
-for (i in 2:nrow(fishes)) {
+for (i in 13:nrow(fishes_a)) {
   render_synopsis_qmd(
-    name = fishes$report_name[i],
-    species_code = fishes$species_code[i],
+    name = fishes_a$report_name[i],
+    species_code = fishes_a$species_code[i],
     survey_definition_id = survey_definition_id,
     area_id = area_id
   )
 }
+
+
 
 # Failures:
 # Alaska skate
@@ -97,6 +95,10 @@ for (i in 1:nrow(fishes2)) {
   )
 }
 
+#move files to bs subdirectory
+bs_files <- list.files(pattern = "^bs_.*\\.html$")
+
+file.rename(bs_files, file.path("bs", bs_files))
 
 #### update to fix formatting
 # I tried to loop biomass and sample size plots
