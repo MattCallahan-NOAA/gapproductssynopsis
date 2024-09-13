@@ -41,7 +41,7 @@ generate_synopsis <- function(species_code=NA,
   # region for akgfmaps
   region <- ifelse(survey_definition_id==47, "goa",
                    ifelse(survey_definition_id==98, "bs.south",
-                          iselse(survey_definition_id==51, "ai")))
+                          ifelse(survey_definition_id==51, "ai",NA)))
   
   
   # pull biomass 
