@@ -15,9 +15,9 @@ library(classInt)
 
 
 generate_synopsis <- function(species_code=NA, 
-                              survey_definition_id=47, 
-                              area_id=99903,
-                              start_year=1990,
+                              survey_definition_id=NA, 
+                              area_id=NA,
+                              start_year=NA,
                               end_year=3000) {
   
   
@@ -37,6 +37,11 @@ generate_synopsis <- function(species_code=NA,
   
   common_name<-taxa$common_name
   scientific_name <- taxa$species_name
+  
+  # region for akgfmaps
+  region <- ifelse(survey_definition_id==47, "goa",
+                   ifelse(survey_definition_id==98, "bs.south",
+                          ifelse(survey_definition_id==51, "ai",NA)))
   
   
   # pull biomass 
@@ -111,6 +116,9 @@ generate_synopsis <- function(species_code=NA,
     
     theme_bw()
   
+  # set plot column number
+ # facetcol <- ifelse(survey_definition_id == 98, 2, 1)
+  
   #### plot sizecomp ####
   length_plot <- ggplot(data=gap_sizecomp, aes(x=length_mm, y= proportion, color=sex, fill=sex))+
     geom_area(position="identity", alpha = 0.25)+
@@ -137,8 +145,8 @@ generate_synopsis <- function(species_code=NA,
   
   #### cpue map ####
   # download haul data
-  #gap_haul <- get_gap_haul()
-  #saveRDS(gap_haul, "gap_haul.RDS")
+  # gap_haul <- get_gap_haul()
+  # saveRDS(gap_haul, "gap_haul.RDS")
   gap_haul<-readRDS("gap_haul.RDS")
   
   #download CPUE data
@@ -174,7 +182,7 @@ generate_synopsis <- function(species_code=NA,
     
     
     idw_map_1 <- make_idw_map_gs(x = gap_cpue_1, # Pass data as a data frame
-                                 region = "goa", # Predefined bs.all area
+                                 region = region, # Predefined bs.all area
                                  extrapolation.grid.type = "sf",
                                  in.crs = "+proj=longlat", # Set input coordinate reference system
                                  out.crs = "EPSG:3338", # Set output coordinate reference system
@@ -199,7 +207,7 @@ generate_synopsis <- function(species_code=NA,
   #2nd most recent year
   if(nrow((gap_cpue_2%>%filter(cpue_kgkm2>0)))>5) {
     idw_map_2 <- make_idw_map_gs(x = gap_cpue_2, # Pass data as a data frame
-                                 region = "goa", # Predefined bs.all area
+                                 region = region, # Predefined bs.all area
                                  extrapolation.grid.type = "sf",
                                  in.crs = "+proj=longlat", # Set input coordinate reference system
                                  out.crs = "EPSG:3338", # Set output coordinate reference system
@@ -224,7 +232,7 @@ generate_synopsis <- function(species_code=NA,
   #3rd most recent year
   if(nrow((gap_cpue_3%>%filter(cpue_kgkm2>0)))>5) {
     idw_map_3 <- make_idw_map_gs(x = gap_cpue_3, # Pass data as a data frame
-                                 region = "goa", # Predefined bs.all area
+                                 region = region, # Predefined bs.all area
                                  extrapolation.grid.type = "sf",
                                  in.crs = "+proj=longlat", # Set input coordinate reference system
                                  out.crs = "EPSG:3338", # Set output coordinate reference system
@@ -361,7 +369,7 @@ generate_synopsis <- function(species_code=NA,
   
   length_count <- gap_length %>%
     group_by(year) %>%
-    summarize(n_samples=sum(frequency))%>%
+    summarize(n_samples=sum(frequency, na.rm=T))%>%
     mutate(sample_type = "length")
   weight_count <- gap_specimen %>%
     filter(weight_g > 0) %>%
