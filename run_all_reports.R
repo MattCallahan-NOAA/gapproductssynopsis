@@ -114,7 +114,7 @@ for (i in 2:nrow(fishes_age)) {
 
 # run for fish with no age
 quarto_file <- "draft_figs_noage.qmd"
-for (i in 7:nrow(fishes_noage)) {
+for (i in 9:nrow(fishes_noage)) {
   render_synopsis_qmd(
     name = fishes_noage$report_name[i],
     species_code = fishes_noage$species_code[i],
@@ -146,6 +146,10 @@ for (i in 1:nrow(fishes2)) {
 bs_files <- list.files(pattern = "^bs_.*\\.html$")
 
 file.rename(bs_files, file.path("bs", bs_files))
+
+ai_files <- list.files(pattern = "^ai_.*\\.html$")
+
+file.rename(ai_files, file.path("ai", ai_files))
 
 #### update to fix formatting
 # I tried to loop biomass and sample size plots
