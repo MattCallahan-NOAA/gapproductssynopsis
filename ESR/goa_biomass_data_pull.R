@@ -77,7 +77,9 @@ goa_biomass <-lapply(Bfishes$species_code, FUN = function(x) get_gap_biomass(
 goa_biomass <- goa_biomass %>%
   left_join(Bfishes, by="species_code")
 
-  biomass_plot <- ggplot(data=goa_biomass)+
+  biomass_plot_fun <- function(x, var=TRUE) {
+    if(var==TRUE) {
+    ggplot(data=x)+
     geom_ribbon(aes(x=year, 
                     ymin=biomass_mt-sqrt(biomass_var),
                     ymax=biomass_mt+sqrt(biomass_var),
@@ -86,6 +88,15 @@ goa_biomass <- goa_biomass %>%
   geom_point(aes(x=year, y=biomass_mt))+
   ylab("Biomass (mt)")+
     theme_bw()
+    } else {
+      ggplot(data=x)+
+        geom_line(aes(x=year, y=biomass_mt, color=common_name))+
+        geom_point(aes(x=year, y=biomass_mt))+
+        ylab("Biomass (mt)")+
+        theme_bw()
+    }
+  }
+biomass_plot <- biomass_plot_fun(goa_biomass)    
 biomass_plot    
 
 # assign groups
@@ -109,7 +120,9 @@ goa_biomass <-goa_biomass %>%
                                              10180) ~ "flatfish",# Dover sole)
                          .default = "other" ))
 
-biomass_plot <- ggplot(data=goa_biomass)+
+biomass_group_fun <- function(x, var=TRUE) {
+  if(var==TRUE) {
+ggplot(data=x)+
   geom_ribbon(aes(x=year, 
                   ymin=biomass_mt-sqrt(biomass_var),
                   ymax=biomass_mt+sqrt(biomass_var),
@@ -118,7 +131,61 @@ biomass_plot <- ggplot(data=goa_biomass)+
   facet_wrap(~group, scales="free")+
   ylab("Biomass (mt)")+
   theme_bw()
+  } else {
+    ggplot(data=x)+
+      geom_line(aes(x=year, y=biomass_mt, color=common_name))+
+      facet_wrap(~group, scales="free")+
+      ylab("Biomass (mt)")+
+      theme_bw()
+  }
+}
+
+biomass_plot <- biomass_group_fun(goa_biomass)
 biomass_plot 
 
 #save
 saveRDS(goa_biomass, "ESR/goa_biomass.RDS")
+
+# combine species
+goa_biomass <- readRDS("ESR/goa_biomass.RDS")
+
+# rougheye blackspotted
+rebs<- goa_biomass%>%
+  filter(species_code %in% c(30050, 30051, 30052)) 
+biomass_plot_fun(rebs)
+
+
+# combine
+rebs_c <- rebs %>%
+  group_by(year) %>%
+  summarize(biomass_mt=sum(biomass_mt, na.rm=T))%>%
+  mutate(common_name="rougheye and blackspotted rockfish")
+
+biomass_plot_fun(rebs_c, var=FALSE)
+
+# dark and dursky rockfish
+ddr<- goa_biomass%>%
+  filter(species_code %in% c(30150, 30151, 30152)) 
+biomass_plot_fun(ddr)
+
+
+# combine
+ddr_c <- ddr %>%
+  group_by(year) %>%
+  summarize(biomass_mt=sum(biomass_mt, na.rm=T))%>%
+  mutate(common_name="dark and dusky rockfish")
+
+biomass_plot_fun(ddr_c, var=FALSE)
+
+
+# to add that back into the group plot
+newrf <-ddr_c %>%
+  bind_rows(rebs_c) %>%
+  mutate(group="rockfish nonPOP")
+
+
+gb2 <-goa_biomass %>%
+  filter(!species_code %in% c(30050, 30051, 30052,30150, 30151, 30152)) %>%
+  bind_rows(newrf)
+
+biomass_group_fun(gb2, var=FALSE)
