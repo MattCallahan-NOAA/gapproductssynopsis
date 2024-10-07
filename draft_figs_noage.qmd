@@ -36,13 +36,19 @@ gp<-generate_synopsis(species_code=params$species_code,
                   start_year=1990,
                   end_year=3000)
 
+# region specific chunk sizing
+std <- 1
+tall <- 1.2
+taller <- 1.5
+tallest <-2.5
+
 ```
 
 ```{r fig1, echo=FALSE, message=FALSE, warning=FALSE}
 print(gp[1])
 ```
 
-```{r fig2, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.2}
+```{r fig2, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, tall)}
 print(gp[2])
 ```
 
@@ -50,11 +56,11 @@ print(gp[2])
 print(gp[3])
 ```
 
-```{r fig5, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=1.5}
+```{r fig5, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==47, taller, tallest)}
 print(gp[4])
 ```
 
-```{r fig7, echo=FALSE, message=FALSE, warning=FALSE}
+```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tall, std)}
 print(gp[5])
 ```
 

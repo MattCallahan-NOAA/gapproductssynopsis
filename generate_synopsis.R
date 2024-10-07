@@ -11,6 +11,8 @@ library(akmarineareas2)
 library(sf)
 library(FSA)
 library(classInt)
+library(gridExtra)
+library(ggplotify)
 
 
 
@@ -177,8 +179,15 @@ generate_synopsis <- function(species_code=NA,
 
   # load modified make_idw_map function
   source("make_idw_map_gs.R")
+  source("make_idw_map_nolegend.R")
+  source("draft_ai_maps.R")
   
   if(nrow((gap_cpue_1%>%filter(cpue_kgkm2>0)))>5) {
+    
+    if(survey_definition_id==52) {
+      idw_map_1 <- make_ai_idw_maps(x=gap_cpue_1, y=1, recent_years=recent_years, mapbreaks=mapbreaks, common_name=common_name) %>%
+        as.ggplot()
+    } else {
     
     
     idw_map_1 <- make_idw_map_gs(x = gap_cpue_1, # Pass data as a data frame
@@ -189,6 +198,7 @@ generate_synopsis <- function(species_code=NA,
                                  set.breaks = mapbreaks,
                                  key.title=paste0(recent_years[1], " ", common_name),
                                  use.survey.bathymetry = FALSE)
+    }
   } else {
     
     x_min<-min(gap_cpue_1$longitude_dd_start)
@@ -206,6 +216,12 @@ generate_synopsis <- function(species_code=NA,
   
   #2nd most recent year
   if(nrow((gap_cpue_2%>%filter(cpue_kgkm2>0)))>5) {
+    
+    if(survey_definition_id==52) {
+      idw_map_2 <- make_ai_idw_maps(x=gap_cpue_2, y=2, recent_years=recent_years, mapbreaks=mapbreaks, common_name=common_name)%>%
+        as.ggplot()
+    } else {
+      
     idw_map_2 <- make_idw_map_gs(x = gap_cpue_2, # Pass data as a data frame
                                  region = region, # Predefined bs.all area
                                  extrapolation.grid.type = "sf",
@@ -213,7 +229,7 @@ generate_synopsis <- function(species_code=NA,
                                  out.crs = "EPSG:3338", # Set output coordinate reference system
                                  set.breaks = mapbreaks,
                                  key.title=paste0(recent_years[2], " ", common_name),
-                                 use.survey.bathymetry = FALSE)
+                                use.survey.bathymetry = FALSE) }
   } else {
     
     x_min<-min(gap_cpue_2$longitude_dd_start)
@@ -231,6 +247,12 @@ generate_synopsis <- function(species_code=NA,
   
   #3rd most recent year
   if(nrow((gap_cpue_3%>%filter(cpue_kgkm2>0)))>5) {
+    
+    if(survey_definition_id==52) {
+      idw_map_3 <- make_ai_idw_maps(x=gap_cpue_3, y=3, recent_years=recent_years, mapbreaks=mapbreaks, common_name=common_name)%>%
+        as.ggplot()
+    } else {
+      
     idw_map_3 <- make_idw_map_gs(x = gap_cpue_3, # Pass data as a data frame
                                  region = region, # Predefined bs.all area
                                  extrapolation.grid.type = "sf",
@@ -238,7 +260,7 @@ generate_synopsis <- function(species_code=NA,
                                  out.crs = "EPSG:3338", # Set output coordinate reference system
                                  set.breaks = mapbreaks,
                                  key.title=paste0(recent_years[3], " ", common_name),
-                                 use.survey.bathymetry = FALSE)
+                                 use.survey.bathymetry = FALSE) }
   } else {
     
     x_min<-min(gap_cpue_3$longitude_dd_start)

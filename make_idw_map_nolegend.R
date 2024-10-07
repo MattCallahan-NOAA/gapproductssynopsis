@@ -1,6 +1,6 @@
 
 ###############################################################################
-make_idw_map_ai <- function(x = NA,
+make_idw_map_nolegend <- function(x = NA,
                             common_name = NA,
                             latitude_dd_start = NA,
                             longitude_dd_start = NA,

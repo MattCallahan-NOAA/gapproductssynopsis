@@ -64,7 +64,7 @@ print(gp[4])
 print(gp[5])
 ```
 
-```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, taller)}
+```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==47, taller, tallest)}
 print(gp[6])
 ```
 
