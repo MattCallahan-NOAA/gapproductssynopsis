@@ -8,7 +8,7 @@ library(ggplot2)
 
 fishes<-readRDS("common_fishes.RDS")
 # add common names for title
-token <- create_token("akfin_secret")
+token <- create_token("callahan_akfin_api")
 txn <- get_gap_taxonomic_groups()
 
 fishes <- fishes %>%
@@ -19,6 +19,7 @@ Bfishes<-fishes %>%
                              21720, # pcod
                              10110, # arrowtooth
                              10130, # fhs
+                             10120, #halibut
                              10261, # n rock sole
                              10262, # s sock sole
                              10200, # rex sole
@@ -114,6 +115,7 @@ goa_biomass <-goa_biomass %>%
                                              30576) ~ "rockfish nonPOP",
                          species_code %in% c(10110, # arrowtooth
                                              10130, # fhs
+                                             10120,
                                              10261, # n rock sole
                                              10262, # s sock sole
                                              10200, # rex sole
