@@ -4,7 +4,7 @@ format:
     self-contained: true
 editor: visual
 params: 
-  species_code: 10130
+  species_code: 30152
   survey_definition_id: 47
   area_id: 99903
 ---
