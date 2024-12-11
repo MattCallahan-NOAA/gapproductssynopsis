@@ -107,17 +107,18 @@ make_idw_map_gs <- function(x = NA,
   # Automatic break selection based on character vector.
   alt.round <- 0 # Set alternative rounding factor to zero based on user-specified breaks
 
-  if(is.character(set.breaks[1])) {
-    set.breaks <- tolower(set.breaks)
-
-    # Set breaks ----
-    break.vals <- classInt::classIntervals(x$cpue_kgkm2, n = 5, style = set.breaks)$brks
-
-    # Setup rounding for small CPUE ----
-    alt.round <- floor(-1*(min((log10(break.vals)-2)[abs(break.vals) > 0])))
-
-    set.breaks <- c(-1, round(break.vals, alt.round))
-  }
+  # comment out automatic break selection since this is done for the last three years.
+  # if(is.character(set.breaks[1])) {
+  #   set.breaks <- tolower(set.breaks)
+  # 
+  #   # Set breaks ----
+  #   break.vals <- classInt::classIntervals(x$cpue_kgkm2, n = 5, style = set.breaks)$brks
+  # 
+  #   # Setup rounding for small CPUE ----
+  #   alt.round <- floor(-1*(min((log10(break.vals)-2)[abs(break.vals) > 0])))
+  # 
+  #   set.breaks <- c(-1, round(break.vals, alt.round))
+  # }
 
   # Ensure breaks go to zero------------------------------------------------------------------------
   if(min(set.breaks) > 0) {
