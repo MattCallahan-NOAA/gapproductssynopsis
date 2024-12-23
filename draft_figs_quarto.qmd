@@ -71,8 +71,12 @@ plot_length_age()
 plot_length_weight()
 ```
 
-```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==47, taller, tallest)}
-plot_idw_last_three_years()
+```{r include=FALSE}
+idw_plot<-plot_idw_last_three_years()
+```
+
+```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, taller, tallest)}
+idw_plot
 ```
 
 ```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tall, std)}

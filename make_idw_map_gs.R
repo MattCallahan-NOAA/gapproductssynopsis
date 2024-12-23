@@ -7,7 +7,7 @@ make_idw_map_gs <- function(x = NA,
                          cpue_kgkm2 = NA,
                          region = "bs.south",
                          extrap.box = NULL,
-                         extrapolation.grid.type = "stars",
+                         extrapolation.grid.type = "sf",
                          set.breaks = "jenks",
                          grid.cell = c(5000,5000),
                          in.crs = "+proj=longlat",
@@ -75,7 +75,7 @@ make_idw_map_gs <- function(x = NA,
                           nmax = idw.nmax)
   
   # Predict station points--------------------------------------------------------------------------
-  stn.predict <- predict(idw_fit, x)
+  stn.predict <- terra::predict(idw_fit, x)
   
   # Generate interpolation grid---------------------------------------------------------------------
   extrap_raster <- terra::rast(xmin = extrap.box['xmin'],
@@ -106,19 +106,6 @@ make_idw_map_gs <- function(x = NA,
   # Format breaks for plotting----------------------------------------------------------------------
   # Automatic break selection based on character vector.
   alt.round <- 0 # Set alternative rounding factor to zero based on user-specified breaks
-
-  # comment out automatic break selection since this is done for the last three years.
-  # if(is.character(set.breaks[1])) {
-  #   set.breaks <- tolower(set.breaks)
-  # 
-  #   # Set breaks ----
-  #   break.vals <- classInt::classIntervals(x$cpue_kgkm2, n = 5, style = set.breaks)$brks
-  # 
-  #   # Setup rounding for small CPUE ----
-  #   alt.round <- floor(-1*(min((log10(break.vals)-2)[abs(break.vals) > 0])))
-  # 
-  #   set.breaks <- c(-1, round(break.vals, alt.round))
-  # }
 
   # Ensure breaks go to zero------------------------------------------------------------------------
   if(min(set.breaks) > 0) {
@@ -182,7 +169,6 @@ make_idw_map_gs <- function(x = NA,
   
   # Make plot---------------------------------------------------------------------------------------
   
-  if(extrapolation.grid.type %in% c("sf", "sf.simple")) {
     extrap.grid <- extrap.grid |>
       sf::st_as_sf() |>
       dplyr::select(-var1.var) |>
@@ -220,40 +206,6 @@ make_idw_map_gs <- function(x = NA,
                      legend.text = element_text(size = 10),
                      legend.title = element_text(size = 10),
                      plot.background = element_rect(fill = NA, color = NA))
-  } else {
-    p1 <- ggplot2::ggplot() +
-      ggplot2::geom_sf(data = map_layers$survey.area, fill = NA) +
-      stars::geom_stars(data = extrap.grid) +
-      ggplot2::geom_sf(data = map_layers$survey.area, fill = NA) +
-      ggplot2::geom_sf(data = map_layers$akland, fill = "grey80") +
-      ggplot2::geom_sf(data = map_layers$bathymetry) +
-      ggplot2::geom_sf(data = map_layers$graticule, color = alpha("grey70", 0.3)) +
-      ggplot2::scale_fill_manual(name = paste0(key.title, "\n",  "key.title.units"),
-                                 values = c("white", RColorBrewer::brewer.pal(9, name = "Blues")[c(2,4,6,8,9)]),
-                                 na.translate = FALSE, # Don't use NA
-                                 drop = FALSE) + # Keep all levels in the plot
-      ggplot2::scale_x_continuous(breaks = map_layers$lon.breaks) +
-      ggplot2::scale_y_continuous(breaks = map_layers$lat.breaks) +
-      ggplot2::coord_sf(xlim = map_layers$plot.boundary$x,
-                        ylim = map_layers$plot.boundary$y) +
-      ggplot2::theme(panel.border = element_rect(color = "black", fill = NA),
-                     panel.background = element_rect(fill = NA, color = "black"),
-                     legend.key = element_rect(fill = NA, color = "grey70"),
-                     legend.position = c(0.12, 0.18),
-                     axis.title = element_blank(),
-                     axis.text = element_text(size = 10),
-                     legend.text = element_text(size = 10),
-                     legend.title = element_text(size = 10),
-                     plot.background = element_rect(fill = NA, color = NA))
-  }
-  
-  # return(list(plot = p1,
-  #             map_layers = map_layers,
-  #             extrapolation.grid = extrap.grid,
-  #             continuous.grid = continuous.grid,
-  #             region = region,
-  #             n.breaks = n.breaks,
-  #             key.title = key.title,
-  #             crs = out.crs))
+
   return(p1)
 }

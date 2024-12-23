@@ -14,7 +14,7 @@ get_gap_data <- function(species_code=NA,
   # region for akgfmaps
   region <- ifelse(survey_definition_id==47, "goa",
                    ifelse(survey_definition_id==98, "bs.south",
-                          ifelse(survey_definition_id==51, "ai",NA)))
+                          ifelse(survey_definition_id==52, "ai",NA)))
   # pull biomass 
   gap_biomass <- get_gap_biomass(survey_definition_id = survey_definition_id,
                                  area_id = area_id,
