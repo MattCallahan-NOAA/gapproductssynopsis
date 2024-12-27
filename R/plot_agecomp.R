@@ -1,4 +1,5 @@
 plot_agecomp <- function() {
+
   
   mcolor <-  "darkblue"
   fcolor <-  "firebrick"

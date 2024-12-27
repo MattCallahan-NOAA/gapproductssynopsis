@@ -4,9 +4,9 @@ format:
     self-contained: true
 editor: visual
 params: 
-  species_code: 21921
-  survey_definition_id: 52
-  area_id: 99904
+  species_code: 30420
+  survey_definition_id: 47
+  area_id: 99903
 ---
 
 ```{r include=FALSE}
@@ -29,6 +29,7 @@ token <-create_token("callahan_akfin_api")
 source("R/get_gap_data.R")
 source("R/plot_biomass.R")
 source("R/plot_agecomp.R")
+source("R/plot_agecomp_bubble.R")
 source("R/plot_sizecomp.R")
 source("R/plot_idw_last_three_years.R")
 source("R/plot_length_age.R")
@@ -49,7 +50,7 @@ tallest <-2.5
 
 ```
 
-GAP Products Synopsis for `r paste(common_name,",", scientific_name, ",", params$species_code)`
+GAP Products Synopsis for `r paste(region, common_name,",", scientific_name, ",", params$species_code)`
 
 ```{r fig1, echo=FALSE, message=FALSE, warning=FALSE}
 plot_biomass()
@@ -61,6 +62,10 @@ plot_sizecomp()
 
 ```{r fig3, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, tall)}
 plot_agecomp()
+```
+
+```{r fig3.5, echo=FALSE, message=FALSE, warning=FALSE}
+plot_agecomp_bubble()
 ```
 
 ```{r fig4, echo=FALSE, message=FALSE, warning=FALSE}
@@ -75,7 +80,7 @@ plot_length_weight()
 idw_plot<-plot_idw_last_three_years()
 ```
 
-```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, taller, tallest)}
+```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, taller)}
 idw_plot
 ```
 
