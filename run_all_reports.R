@@ -9,7 +9,7 @@ library(here)
 fishes<-readRDS("common_fishes.RDS")
 
 # add common names for title
-token <- create_token("akfin_secret")
+token <- create_token("callahan_akfin_api")
 txn <- get_gap_taxonomic_groups()
 
 fishes <- fishes %>%
@@ -103,7 +103,7 @@ render_synopsis_qmd(
   area_id = area_id)
 
 # Run synopsis for fish with age
-for (i in 2:nrow(fishes_age)) {
+for (i in 1:nrow(fishes_age)) {
   render_synopsis_qmd(
     name = fishes_age$report_name[i],
     species_code = fishes_age$species_code[i],
@@ -114,14 +114,20 @@ for (i in 2:nrow(fishes_age)) {
 
 # run for fish with no age
 quarto_file <- "draft_figs_noage.qmd"
-for (i in 9:nrow(fishes_noage)) {
-  render_synopsis_qmd(
-    name = fishes_noage$report_name[i],
-    species_code = fishes_noage$species_code[i],
-    survey_definition_id = survey_definition_id,
-    area_id = area_id
-  )
+
+for (i in 5:nrow(fishes_noage)) {
+  tryCatch({
+    render_synopsis_qmd(
+          name = fishes_noage$report_name[i],
+          species_code = fishes_noage$species_code[i],
+          survey_definition_id = survey_definition_id,
+          area_id = area_id
+        )
+  }, error = function(e) {
+    message(paste("Failed to render for:", fishes_noage$report_name[i], "with species code:", fishes_noage$species_code[i]))
+  })
 }
+
 
 
 # Failures:
