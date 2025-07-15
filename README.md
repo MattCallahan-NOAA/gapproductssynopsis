@@ -6,7 +6,7 @@ These figures are currently still in development as of Fall 2024, but the format
 ## Viewing reports
 To view the reports, please download the html files, or paste their urls into this viewer https://htmlpreview.github.io/
 
-e.g. https://htmlpreview.github.io/?https://github.com/MattCallahan-NOAA/gapproductssynopsis/blob/main/goa/Pacific_cod.html
+e.g. https://htmlpreview.github.io/?https://github.com/MattCallahan-NOAA/gapproductssynopsis/blob/main/goa/goa_Pacific_cod.html
 
 Stand alone figure downloads are coming soon.
 
