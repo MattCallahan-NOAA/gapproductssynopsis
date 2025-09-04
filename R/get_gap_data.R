@@ -77,8 +77,10 @@ get_gap_data <- function(species_code=NA,
                                          species_code = species_code,
                                          start_year = start_year,
                                          end_year = end_year)
+  
   # haul
   #gap_haul <- get_gap_haul()
+  #saveRDS(gap_haul, "gap_haul.RDS")
   gap_haul<-readRDS("gap_haul.RDS")
   
   # make data available in the global environment
