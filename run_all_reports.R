@@ -1,3 +1,5 @@
+#pak::pkg_install("MattCallahan-NOAA/akfingapdata")
+#pak::pkg_install("MattCallahan-NOAA/akmarineareas2")
 library(quarto)
 library(keyring)
 library(akfingapdata)
@@ -52,7 +54,7 @@ fishes_a <- fishes_a %>%
 
 
 #define region for running report
-survey_definition_id <- 52
+survey_definition_id <- 47
 
 region <- ifelse(survey_definition_id==47, "goa",
                  ifelse(survey_definition_id==98, "bs",
@@ -103,7 +105,7 @@ render_synopsis_qmd(
   area_id = area_id)
 
 # Run synopsis for fish with age
-for (i in 1:nrow(fishes_age)) {
+for (i in 14:nrow(fishes_age)) {
   render_synopsis_qmd(
     name = fishes_age$report_name[i],
     species_code = fishes_age$species_code[i],
