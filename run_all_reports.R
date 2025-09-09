@@ -54,7 +54,7 @@ fishes_a <- fishes_a %>%
 
 
 #define region for running report
-survey_definition_id <- 47
+survey_definition_id <- 98
 
 region <- ifelse(survey_definition_id==47, "goa",
                  ifelse(survey_definition_id==98, "bs",
@@ -90,6 +90,7 @@ fishes_noage <-fishes_a %>%
 quarto_file <- "draft_figs_quarto.qmd"
 
 render_synopsis_qmd <- function(name, species_code, survey_definition_id, area_id) {
+ # token <- create_token("callahan_akfin_api")
   quarto_render(
     input = quarto_file,
     execute_params = list(species_code = species_code, survey_definition_id = survey_definition_id, area_id = area_id),
@@ -105,7 +106,7 @@ render_synopsis_qmd(
   area_id = area_id)
 
 # Run synopsis for fish with age
-for (i in 14:nrow(fishes_age)) {
+for (i in 8:nrow(fishes_age)) {
   render_synopsis_qmd(
     name = fishes_age$report_name[i],
     species_code = fishes_age$species_code[i],

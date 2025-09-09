@@ -4,6 +4,9 @@ get_gap_data <- function(species_code=NA,
                          area_id=NA,
                          start_year=NA,
                          end_year=3000) {
+  
+  token <- create_token("callahan_akfin_api")
+  
   sc<-species_code
   taxa <- get_gap_taxonomic_classification()%>%
     filter(species_code==sc)
