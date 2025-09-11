@@ -6,8 +6,8 @@ library(dplyr)
 library(here)
 # rockfish script for Kristen. This is just a copy of the run_all_reports script
 # I had to run the dusky and dark quarto separately since there is no recent data and the cpue maps failed.
-#rf <- c(30150, 30152, 30535, 30475, 30420, 30100) %>% data.frame()
-rf <- 30430 %>% data.frame()
+rf <- c(30150, 30152, 30535, 30475, 30420, 30100, 30430) %>% data.frame()
+rf <- rf %>% data.frame()
 names(rf)<-"species_code"
 
 # add common names for title
@@ -57,7 +57,7 @@ render_synopsis_qmd <- function(name, species_code, survey_definition_id, area_i
   )
 }
 
-for (i in 1:nrow(rfa)) {
+for (i in 2:nrow(rfa)) {
   render_synopsis_qmd(
     name = rfa$report_name[i],
     species_code = rfa$species_code[i],
