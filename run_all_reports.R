@@ -54,7 +54,7 @@ fishes_a <- fishes_a %>%
 
 
 #define region for running report
-survey_definition_id <- 98
+survey_definition_id <- 47
 
 region <- ifelse(survey_definition_id==47, "goa",
                  ifelse(survey_definition_id==98, "bs",
@@ -118,7 +118,7 @@ for (i in 10:nrow(fishes_age)) {
 # run for fish with no age
 quarto_file <- "draft_figs_noage.qmd"
 
-for (i in 5:nrow(fishes_noage)) {
+for (i in 1:nrow(fishes_noage)) {
   tryCatch({
     render_synopsis_qmd(
           name = fishes_noage$report_name[i],
