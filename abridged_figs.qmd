@@ -17,7 +17,7 @@ library(tidyverse)
 library(akfingapdata)
 library(akgfmaps)
 library(keyring)
-library(gfplot)
+#library(gfplot)
 library(akmarineareas2)
 library(sf)
 library(FSA)
@@ -26,14 +26,16 @@ library(classInt)
 options(scipen = 999)
 
   # define token for pulling gap data from akfin api
-token <-create_token("akfin_secret")
+token <-create_token("callahan_akfin_api")
 
-generate_synopsis_abridged <- function(species_code=NA, 
-                              survey_definition_id=47, 
-                              area_id=99903,
-                              start_year=1990,
-                              end_year=3000) {
-  # define species common name
+get_gap_data <- function(species_code=NA, 
+                         survey_definition_id=NA, 
+                         area_id=NA,
+                         start_year=NA,
+                         end_year=3000) {
+  
+  token <- create_token("callahan_akfin_api")
+  
   sc<-species_code
   taxa <- get_gap_taxonomic_classification()%>%
     filter(species_code==sc)
@@ -41,7 +43,10 @@ generate_synopsis_abridged <- function(species_code=NA,
   common_name<-taxa$common_name
   scientific_name <- taxa$species_name
   
-  
+  # region for akgfmaps
+  region <- ifelse(survey_definition_id==47, "goa",
+                   ifelse(survey_definition_id==98, "bs.south",
+                          ifelse(survey_definition_id==52, "ai",NA)))
   # pull biomass 
   gap_biomass <- get_gap_biomass(survey_definition_id = survey_definition_id,
                                  area_id = area_id,
@@ -49,84 +54,82 @@ generate_synopsis_abridged <- function(species_code=NA,
                                  start_year = start_year,
                                  end_year = end_year)
   
-    # pull specimen data
+  # pull sizecomp  
+
+  # pull agecomps
+
+  # pull specimen data
   gap_specimen <- get_gap_specimen(survey_definition_id = survey_definition_id,
                                    species_code = species_code,
                                    start_year = start_year,
                                    end_year = end_year)
-  
-### plot biomass ####
-  biomass_plot <- ggplot(data=gap_biomass)+
-    geom_ribbon(aes(x=year, 
-                    ymin=biomass_mt-sqrt(biomass_var),
-                    ymax=biomass_mt+sqrt(biomass_var)), fill="lightgray")+
-    geom_line(aes(x=year, y=biomass_mt))+
-    geom_point(aes(x=year, y=biomass_mt))+
-    ylab("Biomass (mt)")+
-    theme_bw()
-  
+  # pull length frequencies
   gap_length <- get_gap_length(survey_definition_id = survey_definition_id,
                                species_code = species_code,
                                start_year = start_year,
                                end_year = end_year)
+  # CPUE
+  gap_cpue <- akfingapdata::get_gap_cpue(survey_definition_id = survey_definition_id,
+                                         species_code = species_code,
+                                         start_year = start_year,
+                                         end_year = end_year)
   
-# 
-#   length_count <- gap_length %>%
-#     group_by(year) %>%
-#     summarize(n_samples=sum(frequency))%>%
-#     mutate(sample_type = "length")
-#   weight_count <- gap_specimen %>%
-#     filter(weight_g > 0) %>%
-#     group_by(year) %>%
-#     summarize(n_samples=n())%>%
-#     mutate(sample_type = "weight")
-#   if(any(!is.na(gap_specimen$age))) {
-#     age_count <-gap_specimen %>%
-#       filter(age > 0) %>%
-#       group_by(year) %>%
-#       summarize(n_samples=n())%>%
-#       mutate(sample_type = "age") }
-#   else {
-#     age_count<-gap_specimen %>%
-#       group_by(year) %>%
-#       summarize() %>%
-#       mutate(n_samples=0,
-#              sample_type = "age")
-#   }
-#   biodata_count <-length_count %>%
-#     bind_rows(weight_count) %>%
-#     bind_rows(age_count) %>%
-#     arrange(year) %>%
-#     mutate(sample_type=factor(sample_type, levels=c("length", "weight", "age")))
-# 
-#   min_break<-min(biodata_count$year)
-#   max_break<-max(biodata_count$year)
-# 
-#   sample_size_plot<-ggplot(data=biodata_count)+
-#     geom_text(aes(x=sample_type, y=year, label=n_samples))+
-#     scale_y_continuous(breaks=seq(min_break, max_break, by=1))+
-#     xlab("")+ylab("")+
-#     ggtitle("sample sizes")+
-#     theme_bw()+
-#     theme(panel.grid.minor = element_blank(),
-#           panel.grid.major.x=element_blank())
-# 
-#   return(list(biomass_plot, sample_size_plot))
-  #return(list(biomass_plot))
+  # haul
+  #gap_haul <- get_gap_haul()
+  #saveRDS(gap_haul, "gap_haul.RDS")
+  gap_haul<-readRDS("gap_haul.RDS")
+  
+  # make data available in the global environment
+  gap_data <- list(common_name=common_name,
+                   scientific_name=scientific_name,
+                   region=region,
+                   gap_biomass=gap_biomass,
+                   #gap_sizecomp=gap_sizecomp,
+                   #gap_age=gap_age,
+                   gap_specimen=gap_specimen,
+                   gap_length=gap_length,
+                   gap_cpue=gap_cpue,
+                   gap_haul=gap_haul)
+  #return(gap_data)
+  for (name in names(gap_data)) {
+    assign(name, gap_data[[name]], envir = .GlobalEnv)
+  }
+  
 }
 
-gp<-generate_synopsis_abridged(species_code=params$species_code, 
+#source("R/get_gap_data.R")
+source("R/plot_biomass.R")
+source("R/plot_idw_last_three_years.R")
+source("R/plot_sample_size.R")
+
+get_gap_data(species_code=params$species_code, 
                   survey_definition_id=params$survey_definition_id, 
                   area_id=params$area_id,
-                  start_year=1990,
+                  start_year=1982,
                   end_year=3000)
+
+# region specific chunk sizing
+std <- 1
+tall <- 1.2
+taller <- 1.5
+tallest <-2.5
 
 ```
 
 ```{r fig1, echo=FALSE, message=FALSE, warning=FALSE}
-print(gp[1])
+plot_biomass()
 ```
 
-```{r fig2, echo=FALSE, message=FALSE, warning=FALSE}
-print(gp[2])
+```{r include=FALSE}
+idw_plot<-plot_idw_last_three_years()
 ```
+
+```{r fig6, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, taller)}
+idw_plot
+```
+
+```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tall, std)}
+plot_sample_size()
+```
+
+<https://github.com/MattCallahan-NOAA/gapproductssynopsis>

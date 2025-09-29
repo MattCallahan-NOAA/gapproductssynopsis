@@ -167,10 +167,11 @@ file.rename(ai_files, file.path("ai", ai_files))
 #I don't think anyone cares about these in the GOA anyway
 
 quarto_file <- "abridged_figs.qmd"
+#quarto_file <- "draft_figs_noage.qmd"
 
 fishes3 <- fishes %>% filter(species_code %in% c(471,10112,10140,20006,10115))
 
-for (i in 3:nrow(fishes3)) {
+for (i in 4:nrow(fishes3)) {
   render_synopsis_qmd(
     name = fishes3$report_name[i],
     species_code = fishes3$species_code[i],
@@ -210,3 +211,10 @@ render_synopsis_qmd(name="shortaker_rockfish",
                     species_code=30576,
                     survey_definition_id = 47,
                     area_id = 99903)
+
+# dover sole
+render_synopsis_qmd(
+  name = "Dover sole",
+  species_code = 10180,
+  survey_definition_id = 47,
+  area_id = 99903)
