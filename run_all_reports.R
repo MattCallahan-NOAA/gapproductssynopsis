@@ -218,3 +218,11 @@ render_synopsis_qmd(
   species_code = 10180,
   survey_definition_id = 47,
   area_id = 99903)
+
+# BS AK skate for Lewis
+quarto_file <- "draft_figs_noage.qmd"
+render_synopsis_qmd(
+  name = "Alaska Skate",
+  species_code = 471,
+  survey_definition_id = 98,
+  area_id = 99900)
