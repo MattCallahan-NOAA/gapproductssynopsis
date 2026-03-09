@@ -54,7 +54,7 @@ fishes_a <- fishes_a %>%
 
 
 #define region for running report
-survey_definition_id <- 47
+survey_definition_id <- 52
 
 region <- ifelse(survey_definition_id==47, "goa",
                  ifelse(survey_definition_id==98, "bs",
@@ -100,13 +100,13 @@ render_synopsis_qmd <- function(name, species_code, survey_definition_id, area_i
 
 # test
 render_synopsis_qmd(
-  name = fishes_age$report_name[9],
-  species_code = fishes_age$species_code[9],
+  name = fishes_age$report_name[1],
+  species_code = fishes_age$species_code[1],
   survey_definition_id = survey_definition_id,
   area_id = area_id)
 
 # Run synopsis for fish with age
-for (i in 10:nrow(fishes_age)) {
+for (i in 1:nrow(fishes_age)) {
   render_synopsis_qmd(
     name = fishes_age$report_name[i],
     species_code = fishes_age$species_code[i],

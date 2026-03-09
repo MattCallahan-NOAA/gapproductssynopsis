@@ -61,11 +61,11 @@ plot_length_weight()
 ```
 
 ```{r include=FALSE}
-idw_plot<-plot_idw_last_three_years()
+#idw_plot<-plot_idw_last_three_years()
 ```
 
 ```{r fig5, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tallest, taller)}
-idw_plot
+#idw_plot
 ```
 
 ```{r fig7, echo=FALSE, message=FALSE, warning=FALSE, fig.asp=ifelse(params$survey_definition_id==98, tall, std)}
