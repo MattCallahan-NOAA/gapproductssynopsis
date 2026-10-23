@@ -54,7 +54,7 @@ fishes_a <- fishes_a %>%
 
 
 #define region for running report
-survey_definition_id <- 52
+survey_definition_id <- 98
 
 region <- ifelse(survey_definition_id==47, "goa",
                  ifelse(survey_definition_id==98, "bs",
@@ -115,8 +115,22 @@ for (i in 1:nrow(fishes_age)) {
   )
 }
 
+gt<-txn %>% filter(common_name == "Greenland turbot")  %>%
+  mutate(report_name= gsub(" ", "_", common_name))
+render_synopsis_qmd(
+  name = gt$report_name,
+  species_code = gt$species_code,
+  survey_definition_id = survey_definition_id,
+  area_id = area_id)
+
 # run for fish with no age
 quarto_file <- "draft_figs_noage.qmd"
+
+render_synopsis_qmd(
+  name = fishes$report_name[11],
+  species_code = fishes$species_code[11],
+  survey_definition_id = survey_definition_id,
+  area_id = area_id)
 
 for (i in 1:nrow(fishes_noage)) {
   tryCatch({
@@ -130,6 +144,7 @@ for (i in 1:nrow(fishes_noage)) {
     message(paste("Failed to render for:", fishes_noage$report_name[i], "with species code:", fishes_noage$species_code[i]))
   })
 }
+
 
 
 
